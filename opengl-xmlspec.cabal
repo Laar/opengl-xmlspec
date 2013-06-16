@@ -15,7 +15,10 @@ build-type:          Simple
 cabal-version:       >=1.8
 
 library
-  -- exposed-modules:
+  exposed-modules:
+    Text.OpenGL
   -- other-modules:
   build-depends:
     base ==4.6.*
+  hs-source-dirs: src
+  ghc-options: -Wall -O2
