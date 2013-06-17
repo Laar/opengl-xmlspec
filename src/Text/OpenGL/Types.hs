@@ -44,8 +44,8 @@ data GLEnum
     { enumValue     :: Integer
     , enumApi       :: Maybe ApiReference
     , enumType      :: Maybe TypeSuffix
-    , enumName      :: String
-    , enumAlias     :: Maybe String
+    , enumName      :: EnumName
+    , enumAlias     :: Maybe EnumName
     } deriving (Eq, Ord, Show)
 
 data Unused
@@ -65,11 +65,11 @@ data Command
     -- Name & ReturnType are defined by the proto element. I doubt the current
     -- return type is permissive enough, but parsing it should give more
     -- insight.
-    { commandName       :: Name
+    { commandName       :: CommandName
     , commandReturnType :: ReturnType
     , commandParams     :: [Param]
-    , commandAlias      :: Maybe Name -- inconsistent with alias from enum
-    , commandVecequiv   :: Maybe Name
+    , commandAlias      :: Maybe CommandName
+    , commandVecequiv   :: Maybe CommandName
     , commandGlx        :: [GlX]
     } deriving (Eq, Ord, Show)
 
@@ -87,7 +87,7 @@ data GlX
     = GlX
     { glXType       :: String
     , glCOpCode     :: Int
-    , glXName       :: Maybe Name
+    , glXName       :: Maybe Name -- ? Not further defined in the readme => File bug report?
     , glXComment    :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
@@ -117,8 +117,8 @@ data InterfaceElement
 
 data ElementType
     = IType     TypeName
-    | IEnum     String
-    | ICommand  String
+    | IEnum     EnumName
+    | ICommand  CommandName
     deriving (Eq, Ord, Show)
 
 data Extension
@@ -141,6 +141,14 @@ data ExtensionElement
 
 newtype TypeName
     = TypeName String
+    deriving (Eq, Ord, Show)
+
+newtype EnumName
+    = EnumName String
+    deriving (Eq, Ord, Show)
+
+newtype CommandName
+    = CommandName String
     deriving (Eq, Ord, Show)
 
 newtype TypeSuffix
