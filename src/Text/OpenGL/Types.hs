@@ -13,7 +13,7 @@ data Type
     = Type
     { typeApi       :: Maybe ApiReference
     , typeRequires  :: Maybe String
-    , typeName      :: Maybe String
+    , typeName      :: TypeName
     , typeComment   :: Maybe Comment
     , typeImpl      :: TypeImpl
     } deriving (Eq, Ord, Show)
@@ -75,7 +75,7 @@ data Command
 
 data ReturnType
     = Void
-    | TypeRef Name
+    | TypeRef TypeName
     deriving (Eq, Ord, Show)
 
 data Param
@@ -111,15 +111,14 @@ data FeatureElement
 
 data InterfaceElement
     = IterfaceElement
-    { ieName        :: Name
-    , ieComment     :: Maybe Comment
+    { ieComment     :: Maybe Comment
     , ieElementType :: ElementType
     } deriving (Eq, Ord, Show)
 
 data ElementType
-    = IType
-    | IEnum
-    | ICommand
+    = IType     TypeName
+    | IEnum     String
+    | ICommand  String
     deriving (Eq, Ord, Show)
 
 data Extension
