@@ -28,8 +28,8 @@ data Enums
     { namespace :: Maybe String
     , enumClass :: Maybe String
     , enumType  :: Maybe String
-    , start     :: Maybe IntegralNum
-    , end       :: Maybe IntegralNum
+    , start     :: Maybe Integer
+    , end       :: Maybe Integer
     , vendor    :: Maybe String
     , comment   :: Maybe Comment
     , enums     :: Set (Either Enum Unused)
@@ -37,7 +37,7 @@ data Enums
 
 data Enum
     = Enum
-    { value     :: IntegralNum
+    { value     :: Integer
     , api       :: Maybe String
     , enumType  :: Maybe TypeSuffix
     , name      :: String
@@ -46,8 +46,8 @@ data Enum
 
 data Unused
     = Unused
-    { start     :: IntegralNum
-    , end       :: Maybe IntegralNum
+    { start     :: Integer
+    , end       :: Maybe Integer
     , comment   :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
@@ -130,14 +130,6 @@ data ExtensionElement
     , comment       :: Maybe Comment
     , elements      :: Set InterfaceElement
     } deriving (Eq, Ord, Show)
-
--- | Hexadecimal or decimal number (Integer in schema)
-data IntegralNum
-    = IntegralNum Integer NumType
-    deriving (Eq, Ord, Show)
-
-data NumType = Hex | Decicmal
-    deriving (Eq, Ord, Show)
 
 newtype TypeName
     = TypeName String
