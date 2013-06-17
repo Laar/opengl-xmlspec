@@ -12,16 +12,18 @@ data Types
 
 data Type
     = Type
-    { api       :: Maybe String
+    { typeApi   :: Maybe ApiReference
     , requires  :: Maybe String
     , name      :: Maybe String
     , comment   :: Maybe Comment
-    , text1     :: String
-    , apiEntry  :: Maybe String
-    , text2     :: String
-    , name      :: Maybe Name
-    , text3     :: String
+    , typeImpl  :: TypeImpl
     } deriving (Eq, Ord, Show)
+
+-- This probably needs some tweaking...
+data TypeImpl
+    = TypeDef   String Name
+    | ApiEntry String String String String
+    | BulkDefinitions String
 
 data Enums
     = Enums
@@ -37,7 +39,7 @@ data Enums
 data Enum
     = Enum
     { value     :: Integer
-    , api       :: Maybe String
+    , enumApi   :: Maybe ApiReference
     , enumType  :: Maybe TypeSuffix
     , name      :: String
     , alias     :: Maybe String
@@ -84,7 +86,7 @@ data GlX
 
 data Feature
     = Feature
-    { api       :: String
+    { featureApi    :: ApiReference
     , name      :: Name
     , number    :: Float -- TODO: this seems to be a version
     , protect   :: String
@@ -152,6 +154,10 @@ newtype Comment
 
 newtype Name
     = Name String
+    deriving (Eq, Ord, Show)
+
+newtype ApiReference
+    = ApiReference String
     deriving (Eq, Ord, Show)
 
 data Range
