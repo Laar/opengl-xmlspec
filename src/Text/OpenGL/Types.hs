@@ -41,32 +41,32 @@ data Enums
 
 data Enum
     = Enum
-    { value     :: Integer
-    , enumApi   :: Maybe ApiReference
-    , enumType  :: Maybe TypeSuffix
-    , name      :: String
-    , alias     :: Maybe String
+    { enumValue     :: Integer
+    , enumApi       :: Maybe ApiReference
+    , enumType      :: Maybe TypeSuffix
+    , enumName      :: String
+    , enumAlias     :: Maybe String
     } deriving (Eq, Ord, Show)
 
 data Unused
     = Unused
-    { unusedRange :: Range
-    , comment   :: Maybe Comment
+    { unusedRange   :: Range
+    , unusedComment :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
 data Commands
     = Commands
-    { namespace :: Maybe String
-    , commands  :: Set Command
+    { commandsNamespace :: Maybe String
+    , commands          :: Set Command
     } deriving (Eq, Ord, Show)
 
 data Command
     = Command
-    { proto     :: Proto
-    , params    :: [Param]
-    , alias     :: Maybe Name -- inconsistent with alias from enum
-    , vecequiv  :: Maybe Name
-    , glx       :: [GlX]
+    { commandProto      :: Proto
+    , commandParams     :: [Param]
+    , commandAlias      :: Maybe Name -- inconsistent with alias from enum
+    , commandVecequiv   :: Maybe Name
+    , commandGlx        :: [GlX]
     } deriving (Eq, Ord, Show)
 
 data Proto
@@ -81,35 +81,35 @@ data Param
 
 data GlX
     = GlX
-    { glXType   :: String
-    , opCode    :: Int
-    , name      :: Maybe Name
-    , comment   :: Maybe Comment
+    { glXType       :: String
+    , glCOpCode     :: Int
+    , glXName       :: Maybe Name
+    , glXComment    :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
 data Feature
     = Feature
-    { featureApi    :: ApiReference
-    , name      :: Name
-    , number    :: Float -- TODO: this seems to be a version
-    , protect   :: String
-    , comment   :: Maybe String
-    , requires  :: Set FeatureElement
-    , removes   :: Set FeatureElement
+    { featureApi        :: ApiReference
+    , featureName       :: Name
+    , featureNumber     :: Float -- TODO: this seems to be a version
+    , featureProtect    :: String
+    , featureComment    :: Maybe String
+    , featureRequires   :: Set FeatureElement
+    , featureRemoves    :: Set FeatureElement
     } deriving (Eq, Ord, Show)
 
 data FeatureElement
     = FeatureElement
-    { profileName   :: Maybe ProfileName
-    , comment       :: Maybe Comment
-    , elements      :: Set InterfaceElement
+    { feProfileName   :: Maybe ProfileName
+    , feComment       :: Maybe Comment
+    , feElements      :: Set InterfaceElement
     } deriving (Eq, Ord, Show)
 
 data InterfaceElement
     = IterfaceElement
-    { name          :: Name
-    , comment       :: Maybe Comment
-    , elementType   :: ElementType
+    { ieName        :: Name
+    , ieComment     :: Maybe Comment
+    , ieElementType :: ElementType
     } deriving (Eq, Ord, Show)
 
 data ElementType
@@ -119,20 +119,20 @@ data ElementType
 
 data Extension
     = Extension
-    { name      :: Name
-    , protect   :: Maybe String
-    , supported :: Maybe StringGroup
-    , comment   :: Maybe Comment
-    , requires      :: Set ExtensionElement
-    , removes       :: Set ExtensionElement
+    { extensionName         :: Name
+    , extensionProtect      :: Maybe String
+    , extensionSupported    :: Maybe StringGroup
+    , extensionComment      :: Maybe Comment
+    , extensionRequires     :: Set ExtensionElement
+    , extensionRemoves      :: Set ExtensionElement
     } deriving (Eq, Ord, Show)
 
 data ExtensionElement
     = ExtensionElement
-    { api           :: Maybe String
-    , profileName   :: Maybe ProfileName
-    , comment       :: Maybe Comment
-    , elements      :: Set InterfaceElement
+    { eeApi         :: Maybe String
+    , eeProfileName :: Maybe ProfileName
+    , eeComment     :: Maybe Comment
+    , eeElements    :: Set InterfaceElement
     } deriving (Eq, Ord, Show)
 
 newtype TypeName
