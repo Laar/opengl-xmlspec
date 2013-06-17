@@ -28,8 +28,7 @@ data Enums
     { namespace :: Maybe String
     , enumClass :: Maybe String
     , enumType  :: Maybe String
-    , start     :: Maybe Integer
-    , end       :: Maybe Integer
+    , enumRange :: Maybe Range
     , vendor    :: Maybe String
     , comment   :: Maybe Comment
     , enums     :: Set (Either Enum Unused)
@@ -46,8 +45,7 @@ data Enum
 
 data Unused
     = Unused
-    { start     :: Integer
-    , end       :: Maybe Integer
+    { unusedRange :: Range
     , comment   :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
@@ -154,3 +152,9 @@ newtype Comment
 newtype Name
     = Name String
     deriving (Eq, Ord, Show)
+
+data Range
+    = Range
+    { rangeStart    :: Integer
+    , rangeEnd      :: Maybe Integer
+    }
