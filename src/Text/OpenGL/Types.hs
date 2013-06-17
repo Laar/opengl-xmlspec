@@ -62,17 +62,21 @@ data Commands
 
 data Command
     = Command
-    { commandProto      :: Proto
+    -- Name & ReturnType are defined by the proto element. I doubt the current
+    -- return type is permissive enough, but parsing it should give more
+    -- insight.
+    { commandName       :: Name
+    , commandReturnType :: ReturnType
     , commandParams     :: [Param]
     , commandAlias      :: Maybe Name -- inconsistent with alias from enum
     , commandVecequiv   :: Maybe Name
     , commandGlx        :: [GlX]
     } deriving (Eq, Ord, Show)
 
-data Proto
-    = Proto
-    { -- TODO: interpret & implement
-    } deriving (Eq, Ord, Show)
+data ReturnType
+    = Void
+    | TypeRef Name
+    deriving (Eq, Ord, Show)
 
 data Param
     = Param
