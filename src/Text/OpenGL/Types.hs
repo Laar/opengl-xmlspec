@@ -85,6 +85,7 @@ data GlX
 data Feature
     = Feature
     { api       :: String
+    , name      :: Name
     , number    :: Float -- TODO: this seems to be a version
     , protect   :: String
     , comment   :: Maybe String
