@@ -1,5 +1,4 @@
-module Text.OpenGL.Types (
-) where
+module Text.OpenGL.Types where
 
 import Data.Set (Set)
 
@@ -27,6 +26,7 @@ data TypeImpl
     | ApiEntry  String String String String
     -- | Some types
     | BulkDefs  String
+    deriving (Eq, Ord, Show)
 
 data Enums
     = Enums
@@ -36,10 +36,10 @@ data Enums
     , enumsRange        :: Maybe Range
     , enumsVendor       :: Maybe String
     , enumsComment      :: Maybe Comment
-    , enums             :: Set (Either Enum Unused)
+    , enums             :: Set (Either GLEnum Unused)
     } deriving (Eq, Ord, Show)
 
-data Enum
+data GLEnum
     = Enum
     { enumValue     :: Integer
     , enumApi       :: Maybe ApiReference
@@ -116,6 +116,7 @@ data ElementType
     = IType
     | IEnum
     | ICommand
+    deriving (Eq, Ord, Show)
 
 data Extension
     = Extension
@@ -167,4 +168,4 @@ data Range
     = Range
     { rangeStart    :: Integer
     , rangeEnd      :: Maybe Integer
-    }
+    } deriving (Eq, Ord, Show)
