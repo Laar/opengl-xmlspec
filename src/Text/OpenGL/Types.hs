@@ -12,28 +12,31 @@ data Types
 
 data Type
     = Type
-    { typeApi   :: Maybe ApiReference
-    , requires  :: Maybe String
-    , name      :: Maybe String
-    , comment   :: Maybe Comment
-    , typeImpl  :: TypeImpl
+    { typeApi       :: Maybe ApiReference
+    , typeRequires  :: Maybe String
+    , typeName      :: Maybe String
+    , typeComment   :: Maybe Comment
+    , typeImpl      :: TypeImpl
     } deriving (Eq, Ord, Show)
 
 -- This probably needs some tweaking...
 data TypeImpl
+    -- | The basic type defs, e.g. 'typedef int <name>GLint</name>;'
     = TypeDef   String Name
-    | ApiEntry String String String String
-    | BulkDefinitions String
+    -- | These types are not that easy so for now just all the parts.
+    | ApiEntry  String String String String
+    -- | Some types
+    | BulkDefs  String
 
 data Enums
     = Enums
-    { namespace :: Maybe String
-    , enumClass :: Maybe String
-    , enumType  :: Maybe String
-    , enumRange :: Maybe Range
-    , vendor    :: Maybe String
-    , comment   :: Maybe Comment
-    , enums     :: Set (Either Enum Unused)
+    { enumsNamespace    :: Maybe String
+    , enumsClass        :: Maybe String
+    , enumsType         :: Maybe String
+    , enumsRange        :: Maybe Range
+    , enumsVendor       :: Maybe String
+    , enumsComment      :: Maybe Comment
+    , enums             :: Set (Either Enum Unused)
     } deriving (Eq, Ord, Show)
 
 data Enum
