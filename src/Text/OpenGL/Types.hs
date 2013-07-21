@@ -14,11 +14,6 @@ data Registry
     , regExtensions :: Set Extension
     }
 
-data Types
-    = Types
-    { types :: Set Type
-    } deriving (Eq, Ord, Show)
-
 data Type
     = Type
     { typeApi       :: Maybe ApiReference
@@ -36,12 +31,6 @@ data TypeImpl
     | ApiEntry  String String String String
     -- | Some types
     | BulkDefs  String
-    deriving (Eq, Ord, Show)
-
-data Groups
-    = Groups
-    { group :: Set Group
-    }
     deriving (Eq, Ord, Show)
 
 data Group
