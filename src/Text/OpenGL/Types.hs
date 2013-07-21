@@ -18,8 +18,8 @@ data Registry
 data Type
     = Type
     { typeApi       :: Maybe ApiReference
-    , typeRequires  :: Maybe String
-    -- ^ Requirement of previously defined types.
+    , typeRequires  :: Maybe TypeName
+    -- ^ Requirement of previously defined type(s).
     , typeName      :: TypeName
     -- ^ Name of this type.
     , typeComment   :: Maybe Comment
@@ -30,10 +30,10 @@ data Type
 -- This probably needs some tweaking...
 data TypeImpl
     -- | The basic type defs, e.g. 'typedef int <name>GLint</name>;'
-    = TypeDef   String Name
+    = TypeDef   String TypeName
     -- | These types are not that easy so for now just all the parts.
     | ApiEntry  String String String String
-    -- | Some types
+    -- | Bulk definition of one or more types.
     | BulkDefs  String
     deriving (Eq, Ord, Show)
 
@@ -115,7 +115,7 @@ data GlX
     = GlX
     { glXType       :: String
     , glCOpCode     :: Int
-    , glXName       :: Maybe Name -- ? Not further defined in the readme => File bug report?
+    , glXName       :: Maybe String -- ? Not further defined in the readme => File bug report?
     , glXComment    :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
@@ -128,10 +128,10 @@ data Feature
     = Feature
     { featureApi        :: ApiReference
     -- ^ The defining api-reference.
-    , featureName       :: Name
+    , featureName       :: CPPToken
     -- ^ The name of this feature as a CPP token, e.g. GL_VERSION_3_1.
     , featureNumber     :: Float -- TODO: this seems to be a version
-    , featureProtect    :: String
+    , featureProtect    :: CPPToken
     -- ^ Needed other definition as a CPP token.
     , featureComment    :: Maybe String
     , featureRequires   :: Set FeatureElement
@@ -163,7 +163,7 @@ data ElementType
 -- | An extension to a (set of) features.
 data Extension
     = Extension
-    { extensionName         :: Name
+    { extensionName         :: CPPToken
     , extensionProtect      :: Maybe String
     , extensionSupported    :: Maybe StringGroup
     -- ^ The `ApiReferences` this extensions works against as regex, on the
@@ -221,8 +221,9 @@ newtype Comment
     = Comment String
     deriving (Eq, Ord, Show)
 
-newtype Name
-    = Name String
+-- | The CPP preprocessor token for a `Feature` or `Extension`
+newtype CPPToken
+    = CPPToken String
     deriving (Eq, Ord, Show)
 
 newtype VendorName
