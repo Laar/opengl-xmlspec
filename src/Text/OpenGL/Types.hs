@@ -4,6 +4,16 @@ import Data.Set (Set)
 
 -- TODO: registry
 
+data Registry
+    = Registry
+    { regTypes      :: Set Type
+    , regEnums      :: Set Enums
+    , regCommands   :: Set Command
+    , regGroups     :: Set Group
+    , regFeatures   :: Set Feature
+    , regExtensions :: Set Extension
+    }
+
 data Types
     = Types
     { types :: Set Type
@@ -28,10 +38,23 @@ data TypeImpl
     | BulkDefs  String
     deriving (Eq, Ord, Show)
 
+data Groups
+    = Groups
+    { group :: Set Group
+    }
+    deriving (Eq, Ord, Show)
+
+data Group
+    = Group
+    { groupName     :: GroupName
+    , groupComment  :: Maybe Comment
+    , groupEnums    :: Set EnumName
+    } deriving (Eq, Ord, Show)
+
 data Enums
     = Enums
     { enumsNamespace    :: Maybe String
-    , enumsClass        :: Maybe String
+    , enumsGroup        :: Maybe GroupName
     , enumsType         :: Maybe String
     , enumsRange        :: Maybe Range
     , enumsVendor       :: Maybe String
@@ -67,6 +90,7 @@ data Command
     -- insight.
     { commandName       :: CommandName
     , commandReturnType :: ReturnType
+    , commandGroup      :: Maybe GroupName
     , commandParams     :: [Param]
     , commandAlias      :: Maybe CommandName
     , commandVecequiv   :: Maybe CommandName
@@ -161,6 +185,10 @@ newtype StringGroup
 
 newtype ProfileName
     = ProfileName String
+    deriving (Eq, Ord, Show)
+
+newtype GroupName
+    = GroupName String
     deriving (Eq, Ord, Show)
 
 newtype Comment
