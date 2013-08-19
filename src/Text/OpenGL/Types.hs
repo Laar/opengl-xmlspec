@@ -8,7 +8,7 @@ data Registry
     = Registry
     { regTypes      :: Set Type
     , regEnums      :: Set Enums
-    , regCommands   :: Set Command
+    , regCommands   :: Set Commands
     , regGroups     :: Set Group
     , regFeatures   :: Set Feature
     , regExtensions :: Set Extension
@@ -72,6 +72,7 @@ data GLEnum
     , enumAlias     :: Maybe EnumName
     -- ^ A possibe other enum with the same value. Note, unlike the previous
     -- spec files, the value is included.
+    , enumComment   :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
 -- | Marks an unused range of enums.
@@ -131,9 +132,9 @@ data Feature
     , featureName       :: CPPToken
     -- ^ The name of this feature as a CPP token, e.g. GL_VERSION_3_1.
     , featureNumber     :: Float -- TODO: this seems to be a version
-    , featureProtect    :: CPPToken
+    , featureProtect    :: Maybe CPPToken
     -- ^ Needed other definition as a CPP token.
-    , featureComment    :: Maybe String
+    , featureComment    :: Maybe Comment
     , featureRequires   :: Set FeatureElement
     , featureRemoves    :: Set FeatureElement
     } deriving (Eq, Ord, Show)
@@ -148,7 +149,7 @@ data FeatureElement
     } deriving (Eq, Ord, Show)
 
 data InterfaceElement
-    = IterfaceElement
+    = InterfaceElement
     { ieComment     :: Maybe Comment
     , ieElementType :: ElementType
     } deriving (Eq, Ord, Show)
@@ -176,7 +177,7 @@ data Extension
 
 data ExtensionElement
     = ExtensionElement
-    { eeApi         :: Maybe String
+    { eeApi         :: Maybe ApiReference
     , eeProfileName :: Maybe ProfileName
     , eeComment     :: Maybe Comment
     , eeElements    :: Set InterfaceElement
