@@ -18,9 +18,25 @@ library
   exposed-modules:
     Text.OpenGL
     Text.OpenGL.Types
+    Text.OpenGL.Xml.CParse
+    Text.OpenGL.Xml.CTokens
+    Text.OpenGL.Xml.PreProcess
+    Text.OpenGL.Xml.TypeTypes
   -- other-modules:
   build-depends:
     base ==4.6.*,
-    containers -any
+    containers -any,
+    hxt -any,
+    parsec -any,
+    array -any
   hs-source-dirs: src
   ghc-options: -Wall -O2
+executable xml-preprocess
+  main-is:
+    Main.hs
+  build-depends:
+    base ==4.6.*,
+    hxt -any,
+    opengl-xmlspec
+  hs-source-dirs: preprocessor
+  ghc-options -Wall -O2
