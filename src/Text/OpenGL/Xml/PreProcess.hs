@@ -47,6 +47,7 @@ preProcessRegistry
                         `when` hasName "param")
                 >>> collapseAllXText
                 >>> processChildren ((replaceChildren $ getChildren >>> getText >>> parseFuncPart) `when` (hasName "param" <+> hasName "proto"))
+                >>> processChildren (setElemName (mkName "return") `when` hasName "proto")
 
 pullOutName1 :: ArrowXml a => a XmlTree XmlTree
 pullOutName1 =
