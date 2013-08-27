@@ -20,6 +20,7 @@ library
     Text.OpenGL.Types
     Text.OpenGL.Xml.CParse
     Text.OpenGL.Xml.CTokens
+    Text.OpenGL.Xml.Pickle
     Text.OpenGL.Xml.PreProcess
     Text.OpenGL.Xml.TypeTypes
   -- other-modules:
