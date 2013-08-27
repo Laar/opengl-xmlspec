@@ -9,9 +9,14 @@ import Text.XML.HXT.Core
 preProcessRegistry :: (ArrowChoice a, ArrowXml a) => a XmlTree XmlTree
 preProcessRegistry
     = processTopDown
-      ( (addBulkDef `when` isBulkDef) >>>
-        (replaceSimpleTypes `when` isSimpleType) >>>
-        (replaceCommands `when` isCommand)
+      ( ( processChildren
+          ( (addBulkDef `when` isBulkDef) >>>
+            (replaceSimpleTypes `when` isSimpleType)
+          ) `when` hasName "types"
+        ) >>>
+        ( processChildren (replaceCommands `when` isCommand)
+          `when` hasName "commands"
+        )
       )
     where
         addBulkDef :: ArrowXml a => a XmlTree XmlTree
@@ -29,7 +34,7 @@ preProcessRegistry
             replaceChildren (getChildren >>> getText >>> parseType)
 
         isCommand :: ArrowXml a => a XmlTree XmlTree
-        isCommand = hasName "command"
+        isCommand = hasName "command" >>> getChildren >>> hasName "proto"
         replaceCommands :: (ArrowChoice a, ArrowXml a) => a XmlTree XmlTree
         replaceCommands =
             pullOutCommandName
