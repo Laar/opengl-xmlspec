@@ -1,6 +1,6 @@
 module Text.OpenGL.Xml.TypeTypes (
     TypeDef(..),
-    Type(..),
+    CType(..),
     BaseType(..),
 ) where
 
@@ -8,15 +8,15 @@ import Control.Applicative
 import Text.XML.HXT.Core
 
 data TypeDef
-    = Alias Type
-    | FuncDef Type [(Type, String)]
+    = Alias CType
+    | FuncDef CType [(CType, String)]
     | StructDef String
     deriving (Eq, Ord, Show)
 
-data Type
+data CType
     = Struct    String
-    | CConst    Type
-    | Ptr       Type
+    | CConst    CType
+    | Ptr       CType
     | BaseType  BaseType
     | AliasType String
     deriving (Eq, Ord, Show)
@@ -69,9 +69,9 @@ instance XmlPickler BaseType where
             "size_t"    -> Right SizeT
             "float"     -> Right Float
             "double"    -> Right Double
-            's':'i':'n':'g':'e':'d':' ':rs -> Signed <$> up rs
-            'u':'n':'s':'i':'n':'g':'e':'d':' ':rs -> Unsigned <$> up rs
-            _           -> Left $ "Unknown type " ++ s
+            's':'i':'g':'n':'e':'d':' ':rs -> Signed <$> up rs
+            'u':'n':'s':'i':'g':'n':'e':'d':' ':rs -> Unsigned <$> up rs
+            _           -> Left $ "Unknown type \"" ++ s ++ "\""
 
 instance XmlPickler TypeDef where
     xpickle = xpAlt tag ps
@@ -90,7 +90,7 @@ instance XmlPickler TypeDef where
                 xpElem "structdef" $ xpTextAttr "name"
             ]
 
-instance XmlPickler Type where
+instance XmlPickler CType where
     xpickle = xpAlt tag ps
       where
         tag (Struct _)      = 0

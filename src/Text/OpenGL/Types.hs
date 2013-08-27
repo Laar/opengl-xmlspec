@@ -1,6 +1,13 @@
-module Text.OpenGL.Types where
+module Text.OpenGL.Types (
+    module Text.OpenGL.Types,
+    CType(..),
+    TypeDef(..),
+    BaseType(..),
+) where
 
 import Data.Set (Set)
+
+import Text.OpenGL.Xml.TypeTypes
 
 -- TODO: registry
 
@@ -8,11 +15,11 @@ data Registry
     = Registry
     { regTypes      :: Set Type
     , regEnums      :: Set Enums
-    , regCommands   :: Set Command
+    , regCommands   :: Set Commands
     , regGroups     :: Set Group
     , regFeatures   :: Set Feature
     , regExtensions :: Set Extension
-    }
+    } deriving (Eq, Ord, Show)
 
 -- | The description of a type.
 data Type
@@ -29,10 +36,8 @@ data Type
 
 -- This probably needs some tweaking...
 data TypeImpl
-    -- | The basic type defs, e.g. 'typedef int <name>GLint</name>;'
-    = TypeDef   String TypeName
-    -- | These types are not that easy so for now just all the parts.
-    | ApiEntry  String String String String
+    -- | A type definition
+    = TypeDef TypeDef
     -- | Bulk definition of one or more types.
     | BulkDefs  String
     deriving (Eq, Ord, Show)
@@ -72,6 +77,7 @@ data GLEnum
     , enumAlias     :: Maybe EnumName
     -- ^ A possibe other enum with the same value. Note, unlike the previous
     -- spec files, the value is included.
+    , enumComment   :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
 -- | Marks an unused range of enums.
@@ -94,7 +100,6 @@ data Command
     -- insight.
     { commandName       :: CommandName
     , commandReturnType :: ReturnType
-    , commandGroup      :: Maybe GroupName
     , commandParams     :: [Param]
     , commandAlias      :: Maybe CommandName
     , commandVecequiv   :: Maybe CommandName
@@ -102,13 +107,17 @@ data Command
     } deriving (Eq, Ord, Show)
 
 data ReturnType
-    = Void
-    | TypeRef TypeName
-    deriving (Eq, Ord, Show)
+    = ReturnType
+    { returnType    :: CType
+    , returnGroup   :: Maybe GroupName
+    } deriving (Eq, Ord, Show)
 
 data Param
     = Param
-    { -- TODO: interpret & implement
+    { paramType     :: CType
+    , paramName     :: String
+    , paramGroup    :: Maybe GroupName
+    , paramLength   :: Maybe String
     } deriving (Eq, Ord, Show)
 
 data GlX
@@ -131,9 +140,9 @@ data Feature
     , featureName       :: CPPToken
     -- ^ The name of this feature as a CPP token, e.g. GL_VERSION_3_1.
     , featureNumber     :: Float -- TODO: this seems to be a version
-    , featureProtect    :: CPPToken
+    , featureProtect    :: Maybe CPPToken
     -- ^ Needed other definition as a CPP token.
-    , featureComment    :: Maybe String
+    , featureComment    :: Maybe Comment
     , featureRequires   :: Set FeatureElement
     , featureRemoves    :: Set FeatureElement
     } deriving (Eq, Ord, Show)
@@ -148,7 +157,7 @@ data FeatureElement
     } deriving (Eq, Ord, Show)
 
 data InterfaceElement
-    = IterfaceElement
+    = InterfaceElement
     { ieComment     :: Maybe Comment
     , ieElementType :: ElementType
     } deriving (Eq, Ord, Show)
@@ -176,7 +185,7 @@ data Extension
 
 data ExtensionElement
     = ExtensionElement
-    { eeApi         :: Maybe String
+    { eeApi         :: Maybe ApiReference
     , eeProfileName :: Maybe ProfileName
     , eeComment     :: Maybe Comment
     , eeElements    :: Set InterfaceElement

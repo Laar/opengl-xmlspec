@@ -4,7 +4,7 @@ module Text.OpenGL.Xml.CParse (
     parseStringFuncPart,
     TypeDef(..),
     BaseType(..),
-    Type(..),
+    CType(..),
 ) where
 
 import Control.Applicative hiding (many)
@@ -20,7 +20,7 @@ parseStringTypeDef :: String -> Either ParseError TypeDef
 parseStringTypeDef
     = parse (pTypeDef <* eof) "type" . scanC
 
-parseStringFuncPart :: String -> Either ParseError Type
+parseStringFuncPart :: String -> Either ParseError CType
 parseStringFuncPart
     = parse (fst <$> pArg <* eof) "param | proto" . scanC
 
@@ -33,23 +33,23 @@ pTypeDef = choice
                         <*> braces pArgs
     ] <* tok TSemi
   where
-    pArgs :: P [(Type, String)]
+    pArgs :: P [(CType, String)]
     pArgs = pArg `sepBy` tok TComma
 
-pArg :: P (Type, String)
+pArg :: P (CType, String)
 pArg = (,) <$> pType <*> ident
 
-pType :: P Type
+pType :: P CType
 pType = flip ($)
     <$> pTypeBase
     <*> (appEndo . mconcat . map Endo <$> many (try pPointer))
 
-pPointer :: P (Type -> Type)
+pPointer :: P (CType -> CType)
 pPointer = try $ (.)
     <$> try (Ptr <$ tok TStar)
     <*> try (option id (CConst <$ tok TConst))
 
-pTypeBase :: P Type
+pTypeBase :: P CType
 pTypeBase = choice
     [ try $ Struct    <$> (tok TStruct *> ident)
     , try $ CConst    <$> (tok TConst  *> pTypeBase)
