@@ -17,6 +17,7 @@ cabal-version:       >=1.8
 library
   exposed-modules:
     Text.OpenGL
+    Text.OpenGL.Names
     Text.OpenGL.Types
     Text.OpenGL.Xml.CParse
     Text.OpenGL.Xml.CTokens
@@ -30,7 +31,8 @@ library
     containers -any,
     hxt -any,
     parsec -any,
-    array -any
+    array -any,
+    split -any
   hs-source-dirs: src
   ghc-options: -Wall -O2
 executable xml-preprocess
