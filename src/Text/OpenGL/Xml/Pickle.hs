@@ -2,6 +2,7 @@
 module Text.OpenGL.Xml.Pickle (
 ) where
 
+import Data.Char
 import Data.Monoid
 import qualified Data.Set as S
 
@@ -172,11 +173,19 @@ instance XmlPickler Feature where
         $ xp7Tuple
             xpApiRef
             xpWName
-            (xpAttr "number" xpPrim)
+            (xpAttr "number" xpVersion)
             (xpAttrImplied "protect" xpWText)
             xpComment
             (xpFeatures "require")
             (xpFeatures "remove")
+      where
+        xpVersion :: PU (Int, Int)
+        xpVersion = xpWrapEither (u, p) xpText
+        u s = case break (== '.') s of
+            (ma, '.':mi) | all isDigit ma && all isDigit mi
+                -> Right (read ma, read mi) -- TODO don't use read?
+            _   -> Left "Unparsed version number"
+        p (ma,mi) = show ma ++ '.' : show mi
 
 xpFeatures :: (Ord a, XmlPickler a) => String -> PU (S.Set a)
 xpFeatures n = xpSet $ xpElem n xpickle

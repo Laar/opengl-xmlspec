@@ -139,7 +139,7 @@ data Feature
     -- ^ The defining api-reference.
     , featureName       :: CPPToken
     -- ^ The name of this feature as a CPP token, e.g. GL_VERSION_3_1.
-    , featureNumber     :: Float -- TODO: this seems to be a version
+    , featureNumber     :: (Int, Int)
     , featureProtect    :: Maybe CPPToken
     -- ^ Needed other definition as a CPP token.
     , featureComment    :: Maybe Comment
