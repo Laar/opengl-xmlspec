@@ -27,7 +27,7 @@ library
     Text.OpenGL.Xml.TypeTypes
   -- other-modules:
   build-depends:
-    base ==4.6.*,
+    base >=4 && <5,
     containers -any,
     hxt -any,
     parsec -any,
