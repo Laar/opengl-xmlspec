@@ -30,6 +30,7 @@ readRegistry fp pp = do
 preProcess :: (ArrowChoice a, ArrowXml a) => PreProcess -> a XmlTree XmlTree
 preProcess pp = if pp then preProcessRegistry else id
 
+-- | TODO: make it work (doesn't work with the <?xml ?> header.
 parseRegistry :: String -> PreProcess -> Either String Registry
 parseRegistry str pp = handleResults $ runLA (
         xread >>> preProcess pp >>> parseRegistryArrow
