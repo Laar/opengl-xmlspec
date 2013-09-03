@@ -3,6 +3,8 @@ module Text.OpenGL.Xml.Pickle (
 ) where
 
 import Data.Char
+import Data.List
+import Data.List.Split
 import Data.Monoid
 import qualified Data.Set as S
 
@@ -28,12 +30,6 @@ instance XmlPickler Registry where
             (xpSet xpickle)
             (xpSet xpickle)
             (xpSetSquash $ xpElem "extensions" $ xpSet xpickle)
---            (xpLift mempty)
---            (xpLift mempty)
---            (xpLift mempty)
---            (xpLift mempty)
---            (xpLift mempty)
---            (xpLift mempty)
       where
         xpSetSquash :: Ord a =>  PU (S.Set a) -> PU (S.Set a)
         xpSetSquash = xpWrap (mconcat, (:[])) . xpList
@@ -302,16 +298,30 @@ instance TextWrapper CommandName where
 
 instance TextWrapper TypeSuffix where
     wrapper = (TypeSuffix, \(TypeSuffix s) -> s)
-instance TextWrapper StringGroup where
-    wrapper = (StringGroup, \(StringGroup g) -> g)
 instance TextWrapper ProfileName where
     wrapper = (ProfileName, \(ProfileName p) -> p)
 instance TextWrapper GroupName where
     wrapper = (GroupName, \(GroupName g) -> g)
-
 instance TextWrapper CPPToken where
     wrapper = (CPPToken, \(CPPToken c) -> c)
 instance TextWrapper VendorName where
     wrapper = (VendorName, \(VendorName v) -> v)
+
 instance TextWrapper ApiReference where
-    wrapper = (ApiReference, \(ApiReference a) -> a)
+    wrapper = (u,p)
+      where
+        u str = case str of
+            "gl"    -> GL
+            "gles1" -> GLES1
+            "gles2" -> GLES2
+            _       -> OtherApi str
+        p val = case val of
+            GL          -> "gl"
+            GLES1       -> "gles1"
+            GLES2       -> "gles2"
+            OtherApi n  -> n
+instance TextWrapper StringGroup where
+    wrapper = (u,p)
+      where
+        u = StringGroup . map (fst wrapper) . splitOn "|"
+        p = intercalate "|" . map (snd wrapper) . (\(StringGroup g) -> g)

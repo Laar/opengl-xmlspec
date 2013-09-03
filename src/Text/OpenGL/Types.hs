@@ -212,7 +212,7 @@ newtype TypeSuffix
 
 -- | Version regex, see `extensionSupported`.
 newtype StringGroup
-    = StringGroup String
+    = StringGroup [ApiReference]
     deriving (Eq, Ord, Show)
 
 -- | Name of the opengl profile, e.g. 'compatibility'.
@@ -243,8 +243,11 @@ newtype VendorName
 -- the documentation to overcome some differences between OpenGL, OpenGL ES 1
 -- and OpenGL ES 2/3. (Thus GL-flavour would probably be a more suggestive
 -- name).
-newtype ApiReference
-    = ApiReference String
+data ApiReference
+    = GL
+    | GLES1
+    | GLES2
+    | OtherApi String
     deriving (Eq, Ord, Show)
 
 -- | Enumeration value range, posibly without an end.

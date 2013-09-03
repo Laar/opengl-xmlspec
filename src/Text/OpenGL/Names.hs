@@ -1,7 +1,8 @@
 module Text.OpenGL.Names (
     decomposeExtensionToken,
     decomposeEnumName,
-    decomposeCommandName
+    decomposeCommandName,
+    supports,
 ) where
 
 import Data.Char
@@ -27,3 +28,6 @@ decomposeCommandName (CommandName n) = case n of
     'g':'l':rs | not $ null rs -> Just $ split splitter rs
         where splitter = dropInitBlank $ keepDelimsL (whenElt isUpper)
     _   -> Nothing
+
+supports :: StringGroup -> ApiReference -> Bool
+supports (StringGroup refs) r = r `elem` refs
