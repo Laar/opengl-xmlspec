@@ -75,9 +75,8 @@ pBaseType = choice
     , Unsigned  <$> try (tok TUnsigned *> pBaseType)
     ] <?> "[basic type]"
 
+braces :: (Stream [CTok] m CTok) => ParsecT [CTok] u m a -> ParsecT [CTok] u m a
 braces = between (tok TBrackO) (tok TBrackC)
-
-
 
 -- | This parser succeeds whenever the given predicate returns true when called with
 -- parsed `CTok`. Same as 'Text.Parsec.Char.satisfy'.
@@ -90,6 +89,7 @@ satisfy f = tokenPrim show nextPos tokeq
 
         tokeq :: CTok -> Maybe CToken
         tokeq t = if f t then Just (snd t) else Nothing
+
 satisfy' :: (Stream [CTok] m CTok) => (CToken -> Bool) -> ParsecT [CTok] u m CToken
 satisfy' f = satisfy (f . snd)
 
