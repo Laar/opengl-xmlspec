@@ -104,6 +104,7 @@ data Command
     , commandAlias      :: Maybe CommandName
     , commandVecequiv   :: Maybe CommandName
     , commandGlx        :: [GlX]
+    , commandComment    :: Maybe Comment
     } deriving (Eq, Ord, Show)
 
 data ReturnType

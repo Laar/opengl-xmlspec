@@ -114,17 +114,18 @@ instance XmlPickler Commands where
 instance XmlPickler Command where
     xpickle = xpElem "command"
         $ xpWrap
-            (\(name, ret, params, alias, vec, glx)
-                -> Command name ret params alias vec glx
-            , \(Command name ret params alias vec glx)
-                -> (name, ret, params, alias, vec, glx))
-        $ xp6Tuple
+            (\(name, ret, params, alias, vec, glx, com)
+                -> Command name ret params alias vec glx com
+            , \(Command name ret params alias vec glx com)
+                -> (name, ret, params, alias, vec, glx, com))
+        $ xp7Tuple
             xpWName
             xpickle
             (xpList xpickle)
             (xpOption $ xpFilterXpElems "alias"     $ xpWName)
             (xpOption $ xpFilterXpElems "vecequiv"  $ xpWName)
             (xpFilterElems "glx"  xpickle)
+            xpComment
 
 xpFilterElems :: String -> PU a -> PU a
 xpFilterElems n = xpFilterCont (hasName n) -- TODO: make this work?
