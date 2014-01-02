@@ -1,4 +1,5 @@
 {
+{-# OPTIONS_GHC -fno-warn-unused-matches -fno-warn-missing-signatures -fno-warn-name-shadowing #-}
 module Text.OpenGL.Xml.CTokens where
 }
 
