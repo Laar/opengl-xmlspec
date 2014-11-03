@@ -20,6 +20,8 @@ tokens :-
     \*          { mkTok TStar       }
     \(          { mkTok TBrackO     }
     \)          { mkTok TBrackC     }
+    \[          { mkTok TRBrackO    }
+    \]          { mkTok TRBrackC    }
     [$alpha $digit \_]+  {mkStringTok TIdent }
 
 {
@@ -47,6 +49,8 @@ data CToken
     | TComma
     | TBrackO
     | TBrackC
+    | TRBrackO
+    | TRBrackC
     -- and the indent
     | TIdent String
     deriving (Eq, Ord, Show)

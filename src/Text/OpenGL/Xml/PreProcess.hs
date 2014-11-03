@@ -1,6 +1,6 @@
 module Text.OpenGL.Xml.PreProcess(preProcessRegistry) where
 
-import Text.OpenGL.Xml.CParse
+import Text.OpenGL.Xml.CProcess
 
 import Control.Category
 import Prelude hiding (id, (.))
@@ -69,9 +69,9 @@ getChildText = getChildren >>> getText
 
 parseType :: (ArrowChoice a, ArrowXml a) => a String XmlTree
 parseType = arr parseStringTypeDef
-     >>> ((arr show >>> mkText) ||| (xpickleVal xpickle >>> getChildren))
+     >>> (mkText ||| (xpickleVal xpickle >>> getChildren))
 
 parseFuncPart :: (ArrowChoice a, ArrowXml a) => a String XmlTree
 parseFuncPart =
     arr parseStringFuncPart >>>
-    ((arr show >>> mkText) ||| (xpickleVal xpickle >>> getChildren))
+    (mkText ||| (xpickleVal xpickle >>> getChildren))

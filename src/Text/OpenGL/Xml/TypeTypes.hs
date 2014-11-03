@@ -19,6 +19,7 @@ data CType
     | Ptr       CType
     | BaseType  BaseType
     | AliasType String
+    | ArrayOf   CType String
     deriving (Eq, Ord, Show)
 
 data BaseType
@@ -98,6 +99,7 @@ instance XmlPickler CType where
         tag (Ptr _)         = 2
         tag (BaseType _)    = 3
         tag (AliasType _)   = 4
+        tag (ArrayOf _ _)   = 5
         ps =
             [ xpWrap (Struct, \(Struct s) -> s) $
                 xpElem "struct" $ xpTextAttr "name"
@@ -109,4 +111,8 @@ instance XmlPickler CType where
                 xpElem "basetype" $ xpickle
             , xpWrap (AliasType, \(AliasType n) -> n) $
                 xpElem "aliastype" $ xpTextAttr "name"
+            , xpWrap (uncurry ArrayOf, \(ArrayOf ct s) -> (ct, s)) $
+                xpElem "array" $ xpPair
+                    xpickle
+                    (xpAttr "size" xpText)
             ]
