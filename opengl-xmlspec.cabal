@@ -43,4 +43,4 @@ executable xml-preprocess
     hxt -any,
     opengl-xmlspec
   hs-source-dirs: preprocessor
-  ghc-options -Wall -O2
+  ghc-options: -Wall -O2
