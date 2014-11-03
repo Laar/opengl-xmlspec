@@ -98,10 +98,11 @@ instance XmlPickler GLEnum where
             xpComment
 instance XmlPickler Unused where
     xpickle =  xpElem "unused"
-        $ xpWrap (uncurry Unused, \(Unused r c) -> (r,c))
-        $ xpPair
+        $ xpWrap (uncurry3 Unused, \(Unused r c v) -> (r,c,v))
+        $ xpTriple
             xpickle
             xpComment
+            (xpAttrImplied "vendor" xpWText)
 
 
 instance XmlPickler Commands where

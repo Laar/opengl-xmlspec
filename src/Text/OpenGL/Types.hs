@@ -85,6 +85,7 @@ data Unused
     = Unused
     { unusedRange   :: Range
     , unusedComment :: Maybe Comment
+    , unusedVendor  :: Maybe VendorName
     } deriving (Eq, Ord, Show)
 
 data Commands
