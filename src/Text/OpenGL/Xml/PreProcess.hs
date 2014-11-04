@@ -9,63 +9,64 @@ import Text.XML.HXT.Core
 preProcessRegistry :: (ArrowChoice a, ArrowXml a) => a XmlTree XmlTree
 preProcessRegistry
     = processTopDown
-      ( ( processChildren
+      ( (
           ( (addBulkDef `when` isBulkDef) >>>
             (replaceSimpleTypes `when` isSimpleType)
-          ) `when` hasName "types"
+          ) `when` hasName "type"
         ) >>>
-        ( processChildren (replaceCommands `when` isCommand)
-          `when` hasName "commands"
+        ( (replaceCommands `when` isCommand)
+          `when` hasName "command"
         )
       )
     where
         addBulkDef :: ArrowXml a => a XmlTree XmlTree
         addBulkDef = replaceChildren $ mkelem "ctype" [] [getChildren]
         isBulkDef :: ArrowXml a => a XmlTree XmlTree
-        isBulkDef = hasName "type" >>> hasAttr "name"
+        isBulkDef = hasAttr "name"
 
         isSimpleType :: ArrowXml a => a XmlTree XmlTree
-        isSimpleType = hasName "type" >>> getChildren >>> hasName "name"
+        isSimpleType = getChildren >>> hasName "name"
         replaceSimpleTypes :: (ArrowChoice a, ArrowXml a) => a XmlTree XmlTree
         replaceSimpleTypes =
             pullOutName1 >>>
             processChildren isText >>> --Remove all non text parts (i.e. apientry)
-            collapseXText >>>
-            replaceChildren (getChildren >>> getText >>> parseType)
+            collapseXText >>> -- Merge all text children.
+            replaceChildren (this /> getText >>> parseType)
 
         isCommand :: ArrowXml a => a XmlTree XmlTree
-        isCommand = hasName "command" >>> getChildren >>> hasName "proto"
+        isCommand = getChildren >>> hasName "proto"
         replaceCommands :: (ArrowChoice a, ArrowXml a) => a XmlTree XmlTree
         replaceCommands =
             pullOutCommandName
           where
             pullOutCommandName =
+                -- Extract the name of the command
                 (addAttr "name"
-                    $< (getNamedChildren "proto" >>> getNamedChildren "name" >>> getChildText))
+                    $< (this /> hasName "proto" /> hasName "name" /> getText))
+                -- Extract the name of each argument
+                >>> processChildren (pullOutName1 `when` hasName "param")
+                -- Remove name and ptype nodes (leaving the text content)
                 >>> processChildren (
-                        processChildren (
-                            (getChildren `when` hasName "name") >>>
-                            (getChildren `when` hasName "ptype")
-                            )  `when` hasName "proto")
-                >>> processChildren (
-                        (pullOutName1 >>> processChildren (getChildren `when` hasName "ptype"))
-                        `when` hasName "param")
+                        replaceWithChildrenWhen (hasNameWith $ \qn ->
+                            localPart qn `elem` ["name", "ptype"])
+                    )
+                -- And patch merge the resulting text
                 >>> collapseAllXText
-                >>> processChildren ((replaceChildren $ getChildren >>> getText >>> parseFuncPart) `when` (hasName "param" <+> hasName "proto"))
+                -- Do the actual C-type parsing
+                >>> processChildren ((replaceChildren $ this /> getText >>> parseFuncPart)
+                        `when` (hasName "param" <+> hasName "proto"))
+                -- And rename the return type
                 >>> processChildren (setElemName (mkName "return") `when` hasName "proto")
 
 pullOutName1 :: ArrowXml a => a XmlTree XmlTree
 pullOutName1 =
     (addAttr "name"
-        $< (getNamedChildren "name" >>> getChildText))
-    >>>
-    processChildren ( getChildren `when` hasName "name")
+        $< (this /> hasName "name" /> getText))
+    >>> -- and remove the name node (replacing it by its contensts)
+    replaceWithChildrenWhen (hasName "name")
 
-getNamedChildren :: ArrowXml a => String -> a XmlTree XmlTree
-getNamedChildren n = getChildren >>> hasName n
-
-getChildText :: ArrowXml a => a XmlTree String
-getChildText = getChildren >>> getText
+replaceWithChildrenWhen :: ArrowXml a => a XmlTree XmlTree -> a XmlTree XmlTree
+replaceWithChildrenWhen p = processChildren (getChildren `when` p)
 
 parseType :: (ArrowChoice a, ArrowXml a) => a String XmlTree
 parseType = arr parseStringTypeDef
