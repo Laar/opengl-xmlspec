@@ -9,10 +9,12 @@ import Text.XML.HXT.Core
 preProcessRegistry :: (ArrowChoice a, ArrowXml a) => a XmlTree XmlTree
 preProcessRegistry
     = processTopDown
-      ( (
-          ( (addBulkDef `when` isBulkDef) >>>
-            (replaceSimpleTypes `when` isSimpleType)
-          ) `when` hasName "type"
+      ( ( processChildren
+          (
+              ( (addBulkDef `when` isBulkDef) >>>
+                (replaceSimpleTypes `when` isSimpleType)
+              ) `when` hasName "type"
+          ) `when` hasName "types"
         ) >>>
         ( (replaceCommands `when` isCommand)
           `when` hasName "command"
